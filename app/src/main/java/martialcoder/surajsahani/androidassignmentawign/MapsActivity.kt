@@ -3,14 +3,14 @@ package martialcoder.surajsahani.androidassignmentawign
 import android.Manifest
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -18,7 +18,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import java.util.*
 
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+
+
 
     private lateinit var map: GoogleMap
     private val TAG = MapsActivity::class.java.simpleName
@@ -28,6 +31,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
@@ -43,14 +48,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    override fun onMapReady(googleMap: GoogleMap) {
+
+
+    override fun onMapReady(googleMap: GoogleMap)
+    {
+
+
         map = googleMap
 
         val latitude = 27.36478814513833
         val longitude = 95.31726522303448
         val zoomLevel = 15f
         val overlaySize = 100f
-
 
         val homeLatLng = LatLng(latitude, longitude)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
@@ -65,6 +74,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setPoiClick(map)
         setMapStyle(map)
         enableMyLocation()
+
     }
 
     // Initializes contents of Activity's standard options menu. Only called the first time options
@@ -98,21 +108,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     // Called when user makes a long press gesture on the map.
-    private fun setMapLongClick(map:GoogleMap) {
+    private fun setMapLongClick(map: GoogleMap) {
         map.setOnMapLongClickListener { latLng ->
             // A snippet is additional text that's displayed after the title
             val snippets = String.format(
-                Locale.getDefault(),
-                "Lat: %1$.5f, Long: %2$.5f",
-                latLng.latitude,
-                latLng.longitude
+                    Locale.getDefault(),
+                    "Lat: %1$.5f, Long: %2$.5f",
+                    latLng.latitude,
+                    latLng.longitude
             )
             map.addMarker(
-                MarkerOptions()
-                    .position(latLng)
-                    .title(getString(R.string.dropped_pin))
-                    .snippet(snippets)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                    MarkerOptions()
+                            .position(latLng)
+                            .title(getString(R.string.dropped_pin))
+                            .snippet(snippets)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
             )
         }
     }
@@ -121,9 +131,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setPoiClick(map: GoogleMap){
         map.setOnPoiClickListener { poi ->
             val poiMarker =  map.addMarker(
-                MarkerOptions()
-                    .position(poi.latLng)
-                    .title(poi.name)
+                    MarkerOptions()
+                            .position(poi.latLng)
+                            .title(poi.name)
             )
             poiMarker.showInfoWindow()
         }
@@ -135,10 +145,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             // Customize the styling of the base map using a JSON object defined
             // in a raw resource file.
             val success = map.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                    this,
-                    R.raw.map_style
-                )
+                    MapStyleOptions.loadRawResourceStyle(
+                            this,
+                            R.raw.map_style
+                    )
             )
 
             if (!success) {
@@ -152,8 +162,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     // Checks that users have given permission
     private fun isPermissionGranted() : Boolean {
         return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
     // Checks if users have given their location and sets location enabled if so.
@@ -163,9 +173,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         else {
             ActivityCompat.requestPermissions(
-                this,
-                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
+                    this,
+                    arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_LOCATION_PERMISSION
             )
         }
     }
@@ -174,9 +184,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     // This method is invoked for every call on requestPermissions(android.app.Activity, String[],
     // int).
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray) {
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray) {
         // Check if location permissions are granted and if so enable the
         // location data layer.
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
@@ -185,4 +195,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
+
 }
