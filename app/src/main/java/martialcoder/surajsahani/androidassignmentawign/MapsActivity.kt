@@ -21,15 +21,10 @@ import java.util.*
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
+    private val TAG = MapsActivity::class.java.simpleName
     private val REQUEST_LOCATION_PERMISSION = 1
 
-    private fun isPermissionGranted() : Boolean {
-        return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-    }
 
-    private val TAG = MapsActivity::class.java.simpleName
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -60,21 +55,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val homeLatLng = LatLng(latitude, longitude)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
         map.addMarker(MarkerOptions().position(homeLatLng))
-        setMapLongClick(map)
-        setPoiClick(map)
-        setMapStyle(map)
 
         val androidOverlay = GroundOverlayOptions()
             .image(BitmapDescriptorFactory.fromResource(R.drawable.android))
             .position(homeLatLng, overlaySize)
         map.addGroundOverlay(androidOverlay)
 
+        setMapLongClick(map)
+        setPoiClick(map)
+        setMapStyle(map)
+        enableMyLocation()
     }
+
+    // Initializes contents of Activity's standard options menu. Only called the first time options
+    // menu is displayed.
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.map_options, menu)
         return true
     }
+
+    // Called whenever an item in your options menu is selected.
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         // Change the map type based on the user's selection.
         R.id.normal_map -> {
@@ -95,6 +96,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         else -> super.onOptionsItemSelected(item)
     }
+
+    // Called when user makes a long press gesture on the map.
     private fun setMapLongClick(map:GoogleMap) {
         map.setOnMapLongClickListener { latLng ->
             // A snippet is additional text that's displayed after the title
@@ -114,25 +117,30 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-
+    // Places a marker on the map and displays an info window that contains POI name.
     private fun setPoiClick(map: GoogleMap){
         map.setOnPoiClickListener { poi ->
-            val poiMarkerOptions =  map.addMarker(
+            val poiMarker =  map.addMarker(
                 MarkerOptions()
                     .position(poi.latLng)
                     .title(poi.name)
             )
-//            poiMarker.showInfoWindow()
+            poiMarker.showInfoWindow()
         }
     }
+
+    // Allows map styling and theming to be customized.
     private fun setMapStyle(map: GoogleMap){
         try {
+            // Customize the styling of the base map using a JSON object defined
+            // in a raw resource file.
             val success = map.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                     this,
                     R.raw.map_style
                 )
             )
+
             if (!success) {
                 Log.e(TAG, "Style parsing failed.")
             }
@@ -140,6 +148,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             Log.e(TAG, "Can't find style. Error: ", e)
         }
     }
+
+    // Checks that users have given permission
+    private fun isPermissionGranted() : Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
+    // Checks if users have given their location and sets location enabled if so.
     private fun enableMyLocation() {
         if(isPermissionGranted()) {
             map.isMyLocationEnabled = true
@@ -153,14 +170,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    // Callback for the result from requesting permissions.
+    // This method is invoked for every call on requestPermissions(android.app.Activity, String[],
+    // int).
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<out String>,
+        permissions: Array<String>,
         grantResults: IntArray) {
+        // Check if location permissions are granted and if so enable the
+        // location data layer.
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
-                if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
-                    enableMyLocation()
-                }
+            if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
+                enableMyLocation()
+            }
         }
     }
 }
