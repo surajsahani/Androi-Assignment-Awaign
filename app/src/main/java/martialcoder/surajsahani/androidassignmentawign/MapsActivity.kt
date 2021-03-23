@@ -2,6 +2,8 @@ package martialcoder.surajsahani.androidassignmentawign
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -9,10 +11,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private lateinit var mMap: GoogleMap
+    private lateinit var map: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +36,70 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+        map = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val latitude = 27.36478814513833
+        val longitude = 95.31726522303448
+        val zoomLevel = 15f
+
+        val homeLatLng = LatLng(latitude, longitude)
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
+        map.addMarker(MarkerOptions().position(homeLatLng))
+        setMapLongClick(map)
+        setPoiClick(map)
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.map_options, menu)
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        // Change the map type based on the user's selection.
+        R.id.normal_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_NORMAL
+            true
+        }
+        R.id.hybrid_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_HYBRID
+            true
+        }
+        R.id.satellite_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_SATELLITE
+            true
+        }
+        R.id.terrain_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_TERRAIN
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+    private fun setMapLongClick(map:GoogleMap) {
+        map.setOnMapLongClickListener { latLng ->
+            // A snippet is additional text that's displayed after the title
+            val snippets = String.format(
+                Locale.getDefault(),
+                "Lat: %1$.5f, Long: %2$.5f",
+                latLng.latitude,
+                latLng.longitude
+            )
+            map.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(getString(R.string.dropped_pin))
+                    .snippet(snippets)
+            )
+        }
+    }
+
+
+    private fun setPoiClick(map: GoogleMap){
+        map.setOnPoiClickListener { poi ->
+            val poiMarkerOptions =  map.addMarker(
+                MarkerOptions()
+                    .position(poi.latLng)
+                    .title(poi.name)
+            )
+//            poiMarker.showInfoWindow()
+        }
     }
 }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "135438868722",
+    "project_id": "positive-fuze-308505",
+    "storage_bucket": "positive-fuze-308505.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135438868722:android:71bb38d60175ea66cfb06b",
+        "android_client_info": {
+          "package_name": "martialcoder.surajsahani.androidassignmentawign"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135438868722-959g6dbefuc0vibqnqf3feqt35t78sj1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPwvEj6uu4-P4SD2JgD_iwr4J-7Ot2t-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135438868722-959g6dbefuc0vibqnqf3feqt35t78sj1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
